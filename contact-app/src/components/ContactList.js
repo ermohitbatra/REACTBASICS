@@ -11,6 +11,9 @@ const ContactList = (props) => {
             <ContactCard key={contact.id} contact={contact} removeContactHandler={removeContactHandler}></ContactCard>
         )
     })
+    const getSerchTerm = (e) => {
+      props.searchKeyWord(e.target.value)
+    }
   return (
     <div className='main'>
       <h2>
@@ -19,8 +22,14 @@ const ContactList = (props) => {
         <button className='ui right floated primary button'>Add Contact</button>
         </Link>
       </h2>
+      <div className='ui search'>
+        <div className='ui icon input'>
+          <input type='text' placeholder='Search Contact' className='promt' value={props.term} onChange={getSerchTerm}></input>
+          <i className='search icon'></i>
+        </div>
+      </div>
     <div className='ui celled list'>
-      {reanderContactList}
+      {reanderContactList.length > 0 ? reanderContactList : "No Contact available"}
     </div>
     </div>
   )

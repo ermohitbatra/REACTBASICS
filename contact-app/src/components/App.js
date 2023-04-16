@@ -13,7 +13,8 @@ import EditContact from "./EditContact";
 function App() {
   const LOCAL_STORAGE_KEY = "contacts";
   const [contacts, setContacts] = useState([]);
-
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const addContactHandler = async (contact) => {
     const body = {
       id: uuidv4(),
@@ -46,6 +47,21 @@ function App() {
     const response = await api.get("/contacts");
     return response.data;
   };
+
+  const searchHandler = (searchTerm) => {
+    setSearchTerm(searchTerm)
+    if(searchTerm !== "")
+    {
+      const newContactList = contacts.filter((contact) => {
+        return Object.values(contact).join(" ").toLowerCase().includes(searchTerm.toLowerCase());
+      })
+      setSearchResults(newContactList)
+    }
+    else
+    {
+      setSearchResults(contacts)
+    }
+  }
 
   useEffect(() => {
     // const retriveContacts = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
@@ -94,14 +110,14 @@ function App() {
             path="/"
             element={
               <ContactList
-                contacts={contacts}
+                contacts={searchTerm.length < 1 ? contacts : searchResults}
                 removeContactHandler={removeContactHandler}
+                term={searchTerm}
+                searchKeyWord={searchHandler}
               />
             }
           />
           <Route path="/contact/:id" element={<ContactDetails />} />
-          {/* <AddContact addContactHandler={addContactHandler} /> */}
-          {/* <ContactList contacts={contacts} removeContactHandler={removeContactHandler} /> */}
         </Routes>
       </Router>
     </div>
